@@ -44,8 +44,13 @@ public class Store implements IStore{
     @Override
     public void takeAction() {
         //get the working inventory and staff along with an empty list to hold commands
-        getItemsFromFile();
-        getStaffFromFile();
+        List<Item> inventory = getItemsFromFile();
+        System.out.println("running here");
+        List<Staff> storeStaff = getStaffFromFile();
+        System.out.println(inventory.size());
+        for(Item i: inventory){
+            System.out.println(i.getName());
+        }
         List<String> commands;
         //get the actions from the input file
         try {

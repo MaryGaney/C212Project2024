@@ -2,19 +2,16 @@ package edu.iu.c212.utils;
 
 import edu.iu.c212.models.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileUtils {
-    private static File inputFile = new File("../resources/input.txt");
+    private static File inputFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\input.txt");
     private static File outputFile = new File("../resources/output.txt");
-    private static File inventoryFile = new File("../resources/inventory.txt");
+    private static File inventoryFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\inventory.txt");
     private static File staffFile = new File("../resources/staff.txt");
-    private static File staffAvailabilityFile = new File("../resources/staff_availability_IN.txt");
+    private static File staffAvailabilityFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\staff_availability_IN.txt");
     private static File shiftSchedulesFile = new File("../resources/shift_schedules_IN.txt");
     private static File storeScheduleFile = new File("../resources/store_schedule_OUT.txt");
 
@@ -24,11 +21,12 @@ public class FileUtils {
      * @throws IOException
      */
     public static List<Item> readInventoryFromFile() throws IOException {
-        System.out.println(inventoryFile/*.toURI()*/.getPath() + "\n" + inventoryFile.exists());
+        System.out.println("this is throwing at readInventoryFromFile");
+        System.out.println(inventoryFile.exists());
         // depending on your OS, toURI() may need to be used when working with paths
         // for this one, save each line of the input as an item in a list
         try{
-            BufferedReader br = new BufferedReader(new FileReader(inventoryFile/*.toURI()*/.getPath() + "\n" + inventoryFile.exists()));
+            BufferedReader br = new BufferedReader(new FileReader(inventoryFile.getPath()));
             String line = null;
             List<Item> ourList = new ArrayList<>();
             while ((line = br.readLine()) != null) {
@@ -49,9 +47,10 @@ public class FileUtils {
      * @throws IOException
      */
     public static List<Staff> readStaffFromFile() throws IOException {
-        System.out.println(staffAvailabilityFile/*.toURI()*/.getPath() + "\n" + staffAvailabilityFile.exists());
+        System.out.println("this is throwing at readStaffFromFile");
+        System.out.println(staffAvailabilityFile.getPath() + "\n" + staffAvailabilityFile.exists());
         try{
-            BufferedReader br = new BufferedReader(new FileReader(staffAvailabilityFile/*.toURI()*/.getPath() + "\n" + staffAvailabilityFile.exists()));
+            BufferedReader br = new BufferedReader(new FileReader(staffAvailabilityFile.getPath()));
             String line = null;
             List<Staff> ourList = new ArrayList<>();
             while ((line = br.readLine()) != null) {
@@ -73,7 +72,28 @@ public class FileUtils {
      */
     public static void writeInventoryToFile(List<Item> items) {
         //takes the initial file and rewrites it
+        BufferedWriter bw = null;
+        try {
+            bw = new BufferedWriter(new FileWriter("tempInv"));
+            String line;
+            for (int i = 0; i < items.size(); i++) {
+                bw.write(String.valueOf(items.get(i)));
+            }
+        } catch (Exception e) {
+            return;
+        }finally {
+            try {
+                if (bw != null)
+                    bw.close();
+            } catch (IOException e) {
+                //
+            }
+        }
+        File oldFile = new File(inventoryFile.getPath());
+        oldFile.delete();
 
+        File newFile = new File("temp");
+        newFile.renameTo(new File(inventoryFile.getName()));
 
     }
 
