@@ -7,7 +7,7 @@ Performing store lookup for Hand Truck
 1 Hammer was sold
 3
 Joshua Filler was fired
-Lewis Hamilton has been hired as a Gardner
+Lewis Hamilton has been hired as a Gardener
 Lewis Hamilton was promoted to Manager
 Schedule created.
 Planks sawed.
@@ -24,7 +24,7 @@ Performing store lookup for Digging Forks
 1
 Joshua Filler was fired
 Michael Scott has been hired as a Cashier
-Michael Scott was promoted to Gardner
+Michael Scott was promoted to Gardener
 Schedule created.
 Planks sawed.
 Thank you for visiting High’s Hardware and Gardening!

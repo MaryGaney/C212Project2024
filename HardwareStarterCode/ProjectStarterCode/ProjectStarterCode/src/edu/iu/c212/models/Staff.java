@@ -7,10 +7,17 @@ public class Staff {
     private String role;
     private String availability;
     public Staff(String name, int age, String role, String av){
-    this.fullName = name;
-    this.age = age;
-    this.role = role;
-    this.availability = av;
+        this.fullName = name;
+        this.age = age;
+        //edit role here, gardener, manager, cashier
+        if(role.equals("M")){
+            this.role = "Manager";
+        }else if(role.equals("G")){
+            this.role = "Gardener";
+        }else if(role.equals("C")){
+            this.role = "Cashier";
+        }
+        this.availability = av;
     }
 
     public String getFullName() {
