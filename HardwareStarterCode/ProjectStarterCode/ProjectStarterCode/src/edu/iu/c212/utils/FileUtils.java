@@ -21,8 +21,8 @@ public class FileUtils {
      * @throws IOException
      */
     public static List<Item> readInventoryFromFile() throws IOException {
-        System.out.println("this is throwing at readInventoryFromFile");
-        System.out.println(inventoryFile.exists());
+//        System.out.println("this is throwing at readInventoryFromFile");
+//        System.out.println(inventoryFile.exists());
         // depending on your OS, toURI() may need to be used when working with paths
         // for this one, save each line of the input as an item in a list
         try{
@@ -32,7 +32,7 @@ public class FileUtils {
             while ((line = br.readLine()) != null) {
                 //splits on the new lines
                 String[] splits = line.split(",");
-                ourList.add(new Item(splits[0],Double.parseDouble(splits[1]),Integer.parseInt(splits[2]),Integer.parseInt(splits[3])));
+                ourList.add(new Item(splits[0].replace("'",""),Double.parseDouble(splits[1]),Integer.parseInt(splits[2]),Integer.parseInt(splits[3])));
             }
             return ourList;
         } catch (IOException e) {
@@ -47,8 +47,8 @@ public class FileUtils {
      * @throws IOException
      */
     public static List<Staff> readStaffFromFile() throws IOException {
-        System.out.println("this is throwing at readStaffFromFile");
-        System.out.println(staffAvailabilityFile.getPath() + "\n" + staffAvailabilityFile.exists());
+//        System.out.println("this is throwing at readStaffFromFile");
+//        System.out.println(staffAvailabilityFile.getPath() + "\n" + staffAvailabilityFile.exists());
         try{
             BufferedReader br = new BufferedReader(new FileReader(staffAvailabilityFile.getPath()));
             String line = null;
@@ -111,11 +111,11 @@ public class FileUtils {
      * @throws IOException
      */
     public static List<String> readCommandsFromFile() throws IOException {
-        System.out.println(inputFile/*.toURI()*/.getPath() + "\n" + inputFile.exists());
+        //System.out.println(inputFile/*.toURI()*/.getPath() + "\n" + inputFile.exists());
         // depending on your OS, toURI() may need to be used when working with paths
         // for this one, save each line of the input as an item in a list
         try{
-            BufferedReader br = new BufferedReader(new FileReader(inputFile/*.toURI()*/.getPath() + "\n" + inputFile.exists()));
+            BufferedReader br = new BufferedReader(new FileReader(inputFile.getPath()));
             String line = null;
             List<String> ourList = new ArrayList<>();
             while ((line = br.readLine()) != null) {
