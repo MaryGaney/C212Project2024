@@ -36,7 +36,6 @@ public class Staff {
         return availability;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRole(String g) {
     }
 }
