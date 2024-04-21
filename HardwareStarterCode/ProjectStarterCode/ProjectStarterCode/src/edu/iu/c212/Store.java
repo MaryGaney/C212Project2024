@@ -73,10 +73,32 @@ public class Store implements IStore{
             }else if(commandSplit[0].equals("FIND")){
 
             }else if(commandSplit[0].equals("FIRE")){
+                for (Staff staff: storeStaff) {
+                    if (commandSplit[1].equals(staff.getFullName())) {
+                        storeStaff.remove(staff);
+                    }
+                }
+                saveStaffFromFile(storeStaff);
 
             }else if(commandSplit[0].equals("HIRE")){
+                for (Staff staff: storeStaff) {
+                    if (commandSplit[1].equals(staff.getFullName())) {
+                        storeStaff.add(staff);
+                    }
+                }
+                saveStaffFromFile(storeStaff);
 
             }else if(commandSplit[0].equals("PROMOTE")){
+                for (Staff staff: storeStaff) {
+                    if (command.equals(staff.getFullName())) {
+                        if (staff.getRole().equals("C")) {
+                            staff.setRole("G");
+                        } else if (staff.getRole().equals("G")) {
+                            staff.setRole("M");
+                        }
+                    }
+                }
+                saveStaffFromFile(storeStaff);
 
             }else if(commandSplit[0].equals("SAW")){
 

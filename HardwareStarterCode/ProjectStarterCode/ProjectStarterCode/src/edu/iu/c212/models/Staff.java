@@ -35,4 +35,8 @@ public class Staff {
     public String getAvailability() {
         return availability;
     }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }
