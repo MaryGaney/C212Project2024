@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileUtils {
-    private static File inputFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\input.txt");
-    private static File outputFile = new File("../resources/output.txt");
+    private static File inputFile = new File("C:\\Users\\youju\\OneDrive\\Documents\\GitHub\\C212Project2024\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\input.txt");
+    private static File outputFile = new File("C:\\Users\\youju\\OneDrive\\Documents\\GitHub\\C212Project2024\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\output.txt");
     private static File inventoryFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\inventory.txt");
     private static File staffFile = new File("../resources/staff.txt");
-    private static File staffAvailabilityFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\staff_availability_IN.txt");
-    private static File shiftSchedulesFile = new File("../resources/shift_schedules_IN.txt");
-    private static File storeScheduleFile = new File("../resources/store_schedule_OUT.txt");
+    private static File staffAvailabilityFile = new File("C:\\Users\\youju\\OneDrive\\Documents\\GitHub\\C212Project2024\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\staff_availability_IN.txt");
+    private static File shiftSchedulesFile = new File("C:\\Users\\youju\\OneDrive\\Documents\\GitHub\\C212Project2024\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\shift_schedules_IN.txt");
+    private static File storeScheduleFile = new File("C:\\Users\\youju\\OneDrive\\Documents\\GitHub\\C212Project2024\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\store_schedule_OUT.txt");
 
     /**
      * reads in all the items from inventory.txt
