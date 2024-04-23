@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileUtils {
-    private static File inputFile = new File("C:\\Users\\youju\\OneDrive\\Documents\\GitHub\\C212Project2024\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\input.txt");
-    private static File outputFile = new File("C:\\Users\\youju\\OneDrive\\Documents\\GitHub\\C212Project2024\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\output.txt");
+    private static File inputFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\input.txt");
+    private static File outputFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\output.txt");
     private static File inventoryFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\inventory.txt");
     private static File staffFile = new File("../resources/staff.txt");
-    private static File staffAvailabilityFile = new File("C:\\Users\\youju\\OneDrive\\Documents\\GitHub\\C212Project2024\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\staff_availability_IN.txt");
-    private static File shiftSchedulesFile = new File("C:\\Users\\youju\\OneDrive\\Documents\\GitHub\\C212Project2024\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\shift_schedules_IN.txt");
-    private static File storeScheduleFile = new File("C:\\Users\\youju\\OneDrive\\Documents\\GitHub\\C212Project2024\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\store_schedule_OUT.txt");
+    private static File staffAvailabilityFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\staff_availability_IN.txt");
+    private static File shiftSchedulesFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\shift_schedules_IN.txt");
+    private static File storeScheduleFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\store_schedule_OUT.txt");
 
     /**
      * reads in all the items from inventory.txt
@@ -21,9 +21,6 @@ public class FileUtils {
      * @throws IOException
      */
     public static List<Item> readInventoryFromFile() throws IOException {
-//        System.out.println("this is throwing at readInventoryFromFile");
-//        System.out.println(inventoryFile.exists());
-        // depending on your OS, toURI() may need to be used when working with paths
         // for this one, save each line of the input as an item in a list
         try{
             BufferedReader br = new BufferedReader(new FileReader(inventoryFile.getPath()));
@@ -47,14 +44,11 @@ public class FileUtils {
      * @throws IOException
      */
     public static List<Staff> readStaffFromFile() throws IOException {
-//        System.out.println("this is throwing at readStaffFromFile");
-//        System.out.println(staffAvailabilityFile.getPath() + "\n" + staffAvailabilityFile.exists());
         try{
             BufferedReader br = new BufferedReader(new FileReader(staffAvailabilityFile.getPath()));
             String line = null;
             List<Staff> ourList = new ArrayList<>();
             while ((line = br.readLine()) != null) {
-                //splits on the new lines
                 String[] splits = line.split(" ");
                 //maybe go back and add strip to this later
                 ourList.add(new Staff(splits[0] + " " + splits[1], Integer.parseInt(splits[2]), splits[3],splits[4]));
@@ -67,42 +61,33 @@ public class FileUtils {
     }
 
     /**
-     *saves all the items from inventory.txt
-     * @param items
+     *updates the inventory
+     * @param items: takes in a list of items
      */
     public static void writeInventoryToFile(List<Item> items) {
-        //takes the initial file and rewrites it
-        BufferedWriter bw = null;
-        try {
-            bw = new BufferedWriter(new FileWriter("tempInv"));
-            String line;
-            for (int i = 0; i < items.size(); i++) {
-                bw.write(String.valueOf(items.get(i)));
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(inventoryFile.getPath(), true))) {
+            for(Item i : items){
+                bw.write("'" + i.getName() + "'," + i.getPrice() + "," + i.getQuantity() + "," + i.getAisleNum());
+                bw.newLine();
             }
-        } catch (Exception e) {
-            return;
-        }finally {
-            try {
-                if (bw != null)
-                    bw.close();
-            } catch (IOException e) {
-                //
-            }
+        } catch (IOException e) {
+            System.out.println("IO Exception");
         }
-        File oldFile = new File(inventoryFile.getPath());
-        oldFile.delete();
-
-        File newFile = new File("temp");
-        newFile.renameTo(new File(inventoryFile.getName()));
-
     }
 
     /**
-     * saves al the staff to a file
-     * @param employees
+     * updates the staff file
+     * @param employees: list of employees
      */
     public static void writeStaffToFile(List<Staff> employees) {
-        // TODO
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(staffAvailabilityFile.getPath(), false))) {
+            for(Staff s : employees){
+                bw.write("'" + s.getFullName() +  " " + s.getAge() + " " + s.getRole().substring(0,1) + " " + s.getAvailability());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("IO Exception");
+        }
     }
 
     /**
@@ -111,13 +96,11 @@ public class FileUtils {
      * @throws IOException
      */
     public static List<String> readCommandsFromFile() throws IOException {
-        //System.out.println(inputFile/*.toURI()*/.getPath() + "\n" + inputFile.exists());
-        // depending on your OS, toURI() may need to be used when working with paths
         // for this one, save each line of the input as an item in a list
+        List<String> ourList = new ArrayList<>();
         try{
             BufferedReader br = new BufferedReader(new FileReader(inputFile.getPath()));
             String line = null;
-            List<String> ourList = new ArrayList<>();
             while ((line = br.readLine()) != null) {
                 ourList.add(line);
             }
@@ -125,23 +108,37 @@ public class FileUtils {
         } catch (IOException e) {
             System.exit(0);
         }
-        return null;
+        return ourList;
     }
 
     /**
-     *
-     * @param lines
+     * writes the finalized schedule to a file
+     * @param lines: a list of the string that need to be put in the schedule file
      */
     public static void writeStoreScheduleToFile(List<String> lines) {
-        // TODO
+        // storeScheduleFile
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(storeScheduleFile.getPath(), true))) {
+            for(String line: lines){
+                bw.write(line);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("IO Exception");
+        }
     }
 
     /**
-     *
-     * @param line
+     * appends a string the output file
+     * @param line: string that is appended to the file
      */
     public static void writeLineToOutputFile(String line) {
-        // TODO
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile.getPath(), true))) {
+            bw.write(line);
+            bw.newLine();
+        } catch (IOException e) {
+            System.out.println("IO Exception");
+        }
     }
+
 
 }

@@ -1,26 +1,13 @@
 ADD 'Cordless Screwdriver' 30  1  2
+ADD 'Testing' 20  9  8
 COST 'Multi Bit Ratcheting'
 FIND 'Thermostat'
-FIND 'Hand Truck'
+FIND 'Hand Trucks'
 SELL 'Hammer' 1
-QUANTITY 'Paint Can'
+QUANTITY 'Paint Cans'
 FIRE 'Joshua Filler'
-HIRE 'Lewis hamilton' 35 G
+HIRE 'Lewis hamilton' 35 G M.T.F.SAT.SUN
 PROMOTE 'Lewis hamilton' M
-SCHEDULE
-SAW
-EXIT
-
-
-ADD 'Garden Rakes' 10  1  3
-COST 'Shovel'
-FIND 'Hammer'
-FIND 'Digging Forks'
-SELL 'Pliers' 2
-QUANTITY 'Cutter'
-FIRE 'Will Boland'
-HIRE 'Michael Scott' 28 C
-PROMOTE 'Michael Scott' G
 SCHEDULE
 SAW
 EXIT
