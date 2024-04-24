@@ -17,7 +17,5 @@
 'Wood',14.0,80,12
 'Water Nosel',18.0,24,11
 'Leaf Blower',91.0,18,8
-'Cordless Screwdriver',30.0,1,2
-'Testing',20.0,9,8
 'Hammer',59.0,7,4
-'Plank-11',121.0,56,1
+'Plank-616',121.0,56,1

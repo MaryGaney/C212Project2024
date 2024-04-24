@@ -13,8 +13,10 @@ public class FileUtils {
     private static File inputFile = new File(basePath + "/input.txt");
     private static File outputFile = new File(basePath + "/output.txt");
     private static File inventoryFile = new File(basePath + "/inventory.txt");
+    //did not use the staffFile because 1. did not come in resources and 2. staff availability could be used in the way
     private static File staffFile = new File(basePath + "/staff.txt");
     private static File staffAvailabilityFile = new File(basePath + "/staff_availability_IN.txt");
+    //i use shiftSchedulesFile in the staff scheduler file
     private static File shiftSchedulesFile = new File(basePath + "/shift_schedules_IN.txt");
     private static File storeScheduleFile = new File(basePath + "/store_schedule_OUT.txt");
 

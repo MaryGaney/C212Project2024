@@ -9,8 +9,8 @@ public class SawPrimePlanks {
     /*
         - run through number, check if prime loop between 0 - number and keep a count of factor, if there are only 2 factor then it is prime
         -master function feeds in number, and new list, calls helper
-        -helper goes from 2 to length of the big ASS BOARD, and checks if the iterator is prime, and the length of the board is compostite, then we can add the number to the list
-        -call helper again with the length being (big ass length / i) or (big ass length - i), list
+        -helper goes from 2 to length of the big  BOARD, and checks if the iterator is prime, and the length of the board is compostite, then we can add the number to the list
+        -call helper again with the length being (big  length / i) or (big  length - i), list
         -break the function
     */
 
