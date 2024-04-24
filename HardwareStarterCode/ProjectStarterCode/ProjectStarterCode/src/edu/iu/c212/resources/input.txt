@@ -1,5 +1,4 @@
 ADD 'Cordless Screwdriver' 30  1  2
-ADD 'Testing' 20  9  8
 COST 'Multi Bit Ratcheting'
 FIND 'Thermostat'
 FIND 'Hand Trucks'

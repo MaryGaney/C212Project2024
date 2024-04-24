@@ -171,10 +171,8 @@ public class Store implements IStore{
             inv.add(new Item(name, Double.parseDouble(intel[0]), Integer.parseInt(intel[1]), Integer.parseInt(intel[2])));
             FileUtils.writeInventoryToFile(inv);
             FileUtils.writeLineToOutputFile(name + " was added to inventory");
-        }catch (NumberFormatException e){
-            System.out.println("Remember to format your command as follows: ADD(1 space)'NAME'(1 Space)PRICE(2 spaces)AISLE(2 spaces)");
-        }catch(StringIndexOutOfBoundsException e){
-            System.out.println("Remember to format your command as follows: ADD(1 space)'NAME'(1 Space)PRICE(2 spaces)AISLE(2 spaces)");
+        }catch (NumberFormatException | StringIndexOutOfBoundsException e){
+            System.out.println("Remember to format your command as follows: ADD(1 space)'Name'(1 Space)Price(2 spaces)Quantity(2 spaces)AisleNumber(2 spaces)");
         }
     }
 
@@ -184,14 +182,18 @@ public class Store implements IStore{
      * @param inv: the list of inventory items to find the cost in
      */
     public void Cost(String command, List<Item> inv){
-        String name = command.substring(command.indexOf("'")+1, command.lastIndexOf("'"));
-        double price1 = 0.0;
-        for (int i = 0; i < inv.size(); i++) {
-            if(name.equals(inv.get(i).getName())){
-                price1 += inv.get(i).getPrice();
+        try{
+            String name = command.substring(command.indexOf("'")+1, command.lastIndexOf("'"));
+            double price1 = 0.0;
+            for (int i = 0; i < inv.size(); i++) {
+                if(name.equals(inv.get(i).getName())){
+                    price1 += inv.get(i).getPrice();
+                }
             }
+            FileUtils.writeLineToOutputFile(name + ": $" + price1);
+        }catch (NumberFormatException | StringIndexOutOfBoundsException e){
+            System.out.println("Remember to format your command as follows: COST(1 space)'Name'");
         }
-        FileUtils.writeLineToOutputFile(name + ": $" + price1);
     }
 
     /**
@@ -200,27 +202,31 @@ public class Store implements IStore{
      * @param inv: the list of inventory items to find the cost in
      */
     public void Find(String command, List<Item> inv){
-        boolean found = false;
-        int itemN =0;
-        String result = "";
-        String name = command.substring(command.indexOf("'")+1, command.lastIndexOf("'"));
-        for (int i = 0; i < inv.size(); i++) {
-            if(name.equals(inv.get(i).getName())){
-                found = true;
-                itemN = i;
-            }
-            if(found == true){
-                if(inv.get(itemN).getQuantity() > 1){
-                    result = inv.get(itemN).getQuantity() + " " + inv.get(itemN).getName() + " are available in aisle " + inv.get(itemN).getAisleNum();
-                }else{
-                    result = "A " + inv.get(itemN).getName() + " is available in aisle " + inv.get(itemN).getAisleNum();
+        try{
+            boolean found = false;
+            int itemN =0;
+            String result = "";
+            String name = command.substring(command.indexOf("'")+1, command.lastIndexOf("'"));
+            for (int i = 0; i < inv.size(); i++) {
+                if(name.equals(inv.get(i).getName())){
+                    found = true;
+                    itemN = i;
                 }
+                if(found == true){
+                    if(inv.get(itemN).getQuantity() > 1){
+                        result = inv.get(itemN).getQuantity() + " " + inv.get(itemN).getName() + " are available in aisle " + inv.get(itemN).getAisleNum();
+                    }else{
+                        result = "A " + inv.get(itemN).getName() + " is available in aisle " + inv.get(itemN).getAisleNum();
+                    }
 
-            }else{
-                result = "ERROR: " + name + " cannot be found";
+                }else{
+                    result = "ERROR: " + name + " cannot be found";
+                }
             }
+            FileUtils.writeLineToOutputFile(result);
+        }catch (NumberFormatException | StringIndexOutOfBoundsException e){
+            System.out.println("Remember to format your command as follows: FIND(1 space)'Name'");
         }
-        FileUtils.writeLineToOutputFile(result);
     }
 
     /**
@@ -230,21 +236,25 @@ public class Store implements IStore{
      * @param employees: the list of staff items to fire the employee from
      */
     public void Fire(String command, List<Staff> employees){
-        boolean found = false;
-        int staffNum = 0;
-        String name = command.substring(command.indexOf("'")+1, command.lastIndexOf("'"));
-        for(int i = 0; i < employees.size(); i++){
-            if (name.equals(employees.get(i).getFullName())) {
-                found = true;
-                staffNum = i;
+        try {
+            boolean found = false;
+            int staffNum = 0;
+            String name = command.substring(command.indexOf("'") + 1, command.lastIndexOf("'"));
+            for (int i = 0; i < employees.size(); i++) {
+                if (name.equals(employees.get(i).getFullName())) {
+                    found = true;
+                    staffNum = i;
+                }
             }
-        }
-        if(found == true){
-            FileUtils.writeLineToOutputFile(employees.get(staffNum).getFullName() + " was fired");
-            employees.remove(staffNum);
-            saveStaffFromFile(employees);
-        }else{
-            FileUtils.writeLineToOutputFile("ERROR: " + name + " cannot be found");
+            if (found == true) {
+                FileUtils.writeLineToOutputFile(employees.get(staffNum).getFullName() + " was fired");
+                employees.remove(staffNum);
+                saveStaffFromFile(employees);
+            } else {
+                FileUtils.writeLineToOutputFile("ERROR: " + name + " cannot be found");
+            }
+        }catch (NumberFormatException | StringIndexOutOfBoundsException e){
+            System.out.println("Remember to format your command as follows: FIRE(1 space)'FirstName LastName'");
         }
     }
 
@@ -255,12 +265,16 @@ public class Store implements IStore{
      * @param commandSplit: the split list of the command string
      */
     public void Hire(String command, List<Staff> employees, String[] commandSplit){
-        String name = command.substring(command.indexOf("'")+1, command.lastIndexOf("'")+1).replace("'","");
-        String[] hold = name.split(" ");
-        String finalName = hold[0] + " " + hold[1].substring(0,1).toUpperCase() + hold[1].substring(1);
-        employees.add(new Staff(finalName, Integer.parseInt(commandSplit[3]),commandSplit[4],commandSplit[5]));
-        saveStaffFromFile(employees);
-        FileUtils.writeLineToOutputFile(finalName + " has been hired as a " + employees.getLast().getRole());
+        try {
+            String name = command.substring(command.indexOf("'") + 1, command.lastIndexOf("'") + 1).replace("'", "");
+            String[] hold = name.split(" ");
+            String finalName = hold[0] + " " + hold[1].substring(0, 1).toUpperCase() + hold[1].substring(1);
+            employees.add(new Staff(finalName, Integer.parseInt(commandSplit[3]), commandSplit[4], commandSplit[5]));
+            saveStaffFromFile(employees);
+            FileUtils.writeLineToOutputFile(finalName + " has been hired as a " + employees.getLast().getRole());
+        }catch (NumberFormatException | StringIndexOutOfBoundsException e){
+            System.out.println("Remember to format your command as follows: HIRE(1 space)'FirstName LastName'");
+        }
     }
 
     /**
@@ -270,39 +284,43 @@ public class Store implements IStore{
      * @param commandSplit: the split list of the command string
      */
     public void Promote(String command, List<Staff> employees, String[] commandSplit){
-        String name = command.substring(command.indexOf("'")+1, command.lastIndexOf("'")+1).replace("'","");
-        String[] hold1 = name.split(" ");
-        String finalName = hold1[0] + " " + hold1[1].substring(0,1).toUpperCase() + hold1[1].substring(1);
-        int staffNum = 0;
-        for (int i = 0; i < employees.size(); i++) {
-            if(finalName.equals(employees.get(i).getFullName())){
-                staffNum = i;
+        try {
+            String name = command.substring(command.indexOf("'") + 1, command.lastIndexOf("'") + 1).replace("'", "");
+            String[] hold1 = name.split(" ");
+            String finalName = hold1[0] + " " + hold1[1].substring(0, 1).toUpperCase() + hold1[1].substring(1);
+            int staffNum = 0;
+            for (int i = 0; i < employees.size(); i++) {
+                if (finalName.equals(employees.get(i).getFullName())) {
+                    staffNum = i;
+                }
             }
+            String result = "";
+            if (commandSplit[3].equals("C")) {
+                result = "You cannot be promoted to cashier...";
+            } else if (commandSplit[3].equals("G")) {
+                if (employees.get(staffNum).getRole().equals("Gardener")) {
+                    result = employees.get(staffNum).getFullName() + " is already a " + employees.get(staffNum).getRole();
+                } else {
+                    Staff hold = new Staff(employees.get(staffNum).getFullName(), employees.get(staffNum).getAge(), "G", employees.get(staffNum).getAvailability());
+                    employees.remove(employees.get(staffNum));
+                    employees.add(hold);
+                    result = hold.getFullName() + " was promoted to " + hold.getRole();
+                }
+            } else if (commandSplit[3].equals("M")) {
+                if (employees.get(staffNum).getRole().equals("Manager")) {
+                    result = employees.get(staffNum).getFullName() + " is already a " + employees.get(staffNum).getRole();
+                } else {
+                    Staff hold = new Staff(employees.get(staffNum).getFullName(), employees.get(staffNum).getAge(), "M", employees.get(staffNum).getAvailability());
+                    employees.remove(employees.get(staffNum));
+                    employees.add(hold);
+                    result = hold.getFullName() + " was promoted to " + hold.getRole();
+                }
+            }
+            saveStaffFromFile(employees);
+            FileUtils.writeLineToOutputFile(result);
+        }catch (NumberFormatException | StringIndexOutOfBoundsException e){
+            System.out.println("Remember to format your command as follows: PROMOTE(1 space)'FirstName LastName'(1 space)Role");
         }
-        String result = "";
-        if(commandSplit[3].equals("C")){
-            result = "You cannot be promoted to cashier...";
-        }else if(commandSplit[3].equals("G")){
-            if(employees.get(staffNum).getRole().equals("Gardener")){
-                result = employees.get(staffNum).getFullName() + " is already a " + employees.get(staffNum).getRole();
-            }else {
-                Staff hold = new Staff(employees.get(staffNum).getFullName(), employees.get(staffNum).getAge(), "G", employees.get(staffNum).getAvailability());
-                employees.remove(employees.get(staffNum));
-                employees.add(hold);
-                result = hold.getFullName() + " was promoted to " + hold.getRole();
-            }
-        }else if(commandSplit[3].equals("M")){
-            if(employees.get(staffNum).getRole().equals("Manager")){
-                result = employees.get(staffNum).getFullName() + " is already a " + employees.get(staffNum).getRole();
-            }else{
-                Staff hold = new Staff(employees.get(staffNum).getFullName(),employees.get(staffNum).getAge(),"M",employees.get(staffNum).getAvailability());
-                employees.remove(employees.get(staffNum));
-                employees.add(hold);
-                result = hold.getFullName() + " was promoted to " + hold.getRole();
-            }
-        }
-        saveStaffFromFile(employees);
-        FileUtils.writeLineToOutputFile(result);
     }
 
     /**
@@ -312,29 +330,33 @@ public class Store implements IStore{
      * @param commandSplit: the split list of the command string
      */
     public void Sell(String command, List<Item> inventory, String[] commandSplit){
-        String name = command.substring(command.indexOf("'")+1, command.lastIndexOf("'"));
-        int invNum = 0;
-        boolean found = false;
-        for (int i = 0; i < inventory.size(); i++) {
-            if(name.equals(inventory.get(i).getName())){
-                found = true;
-                invNum = i;
+        try {
+            String name = command.substring(command.indexOf("'") + 1, command.lastIndexOf("'"));
+            int invNum = 0;
+            boolean found = false;
+            for (int i = 0; i < inventory.size(); i++) {
+                if (name.equals(inventory.get(i).getName())) {
+                    found = true;
+                    invNum = i;
+                }
             }
-        }
-        String result = "";
-        if((found == true) || inventory.get(invNum).getQuantity() <= Integer.parseInt(commandSplit[2]) || Integer.parseInt(commandSplit[2]) == 0){
-            Item hold = new Item(name,inventory.get(invNum).getPrice(),inventory.get(invNum).getQuantity()-Integer.parseInt(commandSplit[2]),inventory.get(invNum).getAisleNum());
-            inventory.remove(invNum);
-            inventory.add(hold);
-            if(Integer.parseInt(commandSplit[2]) <= 1) {
-                result = commandSplit[2] + " " + name + " was sold";
-            }else{
-                result =  commandSplit[2] + " " + name + " were sold";
+            String result = "";
+            if ((found == true) || inventory.get(invNum).getQuantity() <= Integer.parseInt(commandSplit[2]) || Integer.parseInt(commandSplit[2]) == 0) {
+                Item hold = new Item(name, inventory.get(invNum).getPrice(), inventory.get(invNum).getQuantity() - Integer.parseInt(commandSplit[2]), inventory.get(invNum).getAisleNum());
+                inventory.remove(invNum);
+                inventory.add(hold);
+                if (Integer.parseInt(commandSplit[2]) <= 1) {
+                    result = commandSplit[2] + " " + name + " was sold";
+                } else {
+                    result = commandSplit[2] + " " + name + " were sold";
+                }
+            } else {
+                result = "ERROR: " + name + " could not be sold";
             }
-        }else{
-            result = "ERROR: " + name + " could not be sold";
+            FileUtils.writeLineToOutputFile(result);
+        }catch (NumberFormatException | StringIndexOutOfBoundsException e){
+            System.out.println("Remember to format your command as follows: SELL(1 space)'Name'(1 space)Quantity");
         }
-        FileUtils.writeLineToOutputFile(result);
     }
 
     /**
@@ -343,22 +365,26 @@ public class Store implements IStore{
      * @param inventory:  the list of inventory items to find the cost in
      */
     public void Quantity(String command, List<Item> inventory){
-        String name = command.substring(command.indexOf("'")+1, command.lastIndexOf("'")).toLowerCase(Locale.ROOT);
-        boolean found = false;
-        int invNum = 0;
-        String result = "";
-        for (int i = 0; i < inventory.size(); i++) {
-            if(name.equals(inventory.get(i).getName().toLowerCase())){
-                found = true;
-                invNum = i;
+        try {
+            String name = command.substring(command.indexOf("'") + 1, command.lastIndexOf("'")).toLowerCase(Locale.ROOT);
+            boolean found = false;
+            int invNum = 0;
+            String result = "";
+            for (int i = 0; i < inventory.size(); i++) {
+                if (name.equals(inventory.get(i).getName().toLowerCase())) {
+                    found = true;
+                    invNum = i;
+                }
             }
+            if (found == true) {
+                result = String.valueOf(inventory.get(invNum).getQuantity());
+            } else {
+                result = "ERROR: " + name + " could not be found";
+            }
+            FileUtils.writeLineToOutputFile(result);
+        }catch (NumberFormatException | StringIndexOutOfBoundsException e){
+            System.out.println("Remember to format your command as follows: Quantity(1 space)'Name'");
         }
-        if(found == true){
-            result = String.valueOf(inventory.get(invNum).getQuantity());
-        }else{
-            result = "ERROR: " + name + " could not be found";
-        }
-        FileUtils.writeLineToOutputFile(result);
     }
 
     /**
