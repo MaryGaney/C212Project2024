@@ -3,17 +3,20 @@ package edu.iu.c212.utils;
 import edu.iu.c212.models.*;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileUtils {
-    private static File inputFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\input.txt");
-    private static File outputFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\output.txt");
-    private static File inventoryFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\inventory.txt");
-    private static File staffFile = new File("../resources/staff.txt");
-    private static File staffAvailabilityFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\staff_availability_IN.txt");
-    private static File shiftSchedulesFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\shift_schedules_IN.txt");
-    private static File storeScheduleFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\store_schedule_OUT.txt");
+    //had to ask a tutor about this one :(
+    private static final Path basePath = Path.of("./HardwareStarterCode/ProjectStarterCode/ProjectStarterCode/src/edu/iu/c212/resources");
+    private static File inputFile = new File(basePath + "/input.txt");
+    private static File outputFile = new File(basePath + "/output.txt");
+    private static File inventoryFile = new File(basePath + "/inventory.txt");
+    private static File staffFile = new File(basePath + "/staff.txt");
+    private static File staffAvailabilityFile = new File(basePath + "/staff_availability_IN.txt");
+    private static File shiftSchedulesFile = new File(basePath + "/shift_schedules_IN.txt");
+    private static File storeScheduleFile = new File(basePath + "/store_schedule_OUT.txt");
 
     /**
      * reads in all the items from inventory.txt
@@ -21,6 +24,7 @@ public class FileUtils {
      * @throws IOException
      */
     public static List<Item> readInventoryFromFile() throws IOException {
+        System.out.println(inputFile.getAbsolutePath());
         // for this one, save each line of the input as an item in a list
         try{
             BufferedReader br = new BufferedReader(new FileReader(inventoryFile.getPath()));
@@ -65,7 +69,7 @@ public class FileUtils {
      * @param items: takes in a list of items
      */
     public static void writeInventoryToFile(List<Item> items) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(inventoryFile.getPath(), true))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(inventoryFile.getPath(), false))) {
             for(Item i : items){
                 bw.write("'" + i.getName() + "'," + i.getPrice() + "," + i.getQuantity() + "," + i.getAisleNum());
                 bw.newLine();
@@ -82,7 +86,7 @@ public class FileUtils {
     public static void writeStaffToFile(List<Staff> employees) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(staffAvailabilityFile.getPath(), false))) {
             for(Staff s : employees){
-                bw.write("'" + s.getFullName() +  " " + s.getAge() + " " + s.getRole().substring(0,1) + " " + s.getAvailability());
+                bw.write(s.getFullName() +  " " + s.getAge() + " " + s.getRole().substring(0,1) + " " + s.getAvailability());
                 bw.newLine();
             }
         } catch (IOException e) {
@@ -108,6 +112,7 @@ public class FileUtils {
         } catch (IOException e) {
             System.exit(0);
         }
+        //unreachable but needs it
         return ourList;
     }
 

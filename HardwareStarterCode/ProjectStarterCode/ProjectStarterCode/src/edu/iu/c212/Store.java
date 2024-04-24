@@ -8,16 +8,22 @@ import edu.iu.c212.utils.FileUtils;
 import java.io.IOException;
 import java.util.*;
 
+import static edu.iu.c212.programs.SawPrimePlanks.getPlankLengths;
+
 public class Store implements IStore{
 
-    //created instance variables for easier use in methods below
-    private ArrayList<Item> inven;
-    private ArrayList<Staff> employ;
 
+    /**
+     * this method instantiates the store
+     */
     public Store(){
         takeAction();
     }
 
+    /**
+     * this method reads the inventory from the inventory file
+     * @return: a list of items in the inventory
+     */
     @Override
     public List<Item> getItemsFromFile() {
         try {
@@ -27,6 +33,10 @@ public class Store implements IStore{
         }
     }
 
+    /**
+     * this method reads the staff from the availability file
+     * @return: the list of staff members
+     */
     @Override
     public List<Staff> getStaffFromFile() {
         try {
@@ -36,16 +46,30 @@ public class Store implements IStore{
         }
     }
 
+    /**
+     * this method updates the inventory file with the current staff list
+     * @param items: the inventory list to update the file with
+     */
     @Override
     public void saveItemsFromFile(List<Item> items) {
         FileUtils.writeInventoryToFile(items);
     }
 
+    /**
+     * this method updates the staff file with the current staff list
+     * @param staff: the staff list to update the file with
+     */
     @Override
     public void saveStaffFromFile(List<Staff> staff) {
         FileUtils.writeStaffToFile(staff);
     }
 
+    /**
+     * this method
+     *   -creates the inventory list
+     *   -creates the staff list
+     *   -takes in the commands from the input file and feeds them to the applyCommand method
+     */
     @Override
     public void takeAction() {
         //split up the commands using methods
@@ -69,6 +93,13 @@ public class Store implements IStore{
         }
     }
 
+    /**
+     * this function calls the respective function for each command
+     * @param command: the string version of the command, contains all of the arguments needed for each command to run
+     * @param commandSplit: the split version of the string command
+     * @param inventory: the list of items in the inventory
+     * @param storeStaff: the list of the employees in the staff
+     */
     public void applyCommand(String command, String[] commandSplit, List<Item> inventory, List<Staff> storeStaff){
         if(commandSplit[0].equals("ADD")){
             Add(command, inventory);
@@ -79,7 +110,7 @@ public class Store implements IStore{
             System.out.println("Press Enter To Continue...");
             Scanner keyboard = new Scanner(System.in);
             if(keyboard.hasNextLine()){
-                getUserInput();
+                getUserInput(inventory, storeStaff);
             }
         }else if(commandSplit[0].equals("FIND")){
             Find(command,inventory);
@@ -91,7 +122,21 @@ public class Store implements IStore{
         }else if(commandSplit[0].equals("PROMOTE")){
             Promote(command, storeStaff, commandSplit);
         }else if(commandSplit[0].equals("SAW")){
-
+            Map<Item,Integer> holdThePlanksPlease = new HashMap<>();
+            for (int i = 0; i < inventory.size(); i++) {
+                if(inventory.get(i).getName().replace("'","").startsWith("Plank")){
+                    holdThePlanksPlease.put(inventory.get(i),i);
+                }
+            }
+            ArrayList<Item> fin = new ArrayList<>();
+            for(Item i: holdThePlanksPlease.keySet()){
+                int mainNum = Integer.parseInt(i.getName().substring(6,9));
+                List<Integer> result = getPlankLengths(mainNum);
+                Item hold = new Item("Plank-" + result.getFirst(), result.getFirst()*result.getFirst(),result.size(),inventory.get(holdThePlanksPlease.get(i)).getAisleNum());
+                inventory.remove(inventory.get(holdThePlanksPlease.get(i)));
+                inventory.add(hold);
+            }
+            saveItemsFromFile(inventory);
         }else if(commandSplit[0].equals("SCHEDULE")){
             StaffScheduler h = new StaffScheduler();
             h.scheduleStaff();
@@ -112,17 +157,32 @@ public class Store implements IStore{
 
      */
 
-    //add needs to take in
-    public List<Item> Add(String command, List<Item> inv){
-        //takes in the String com, List<Item> inv
-        String name = command.substring(command.indexOf("'")+1, command.lastIndexOf("'"));
-        String[] intel = (command.substring(command.lastIndexOf("'")+1)).split("  ");
-        inv.add(new Item(name, Double.parseDouble(intel[0]),Integer.parseInt(intel[1]),Integer.parseInt(intel[2])));
-        FileUtils.writeInventoryToFile(new ArrayList<Item>(List.of(new Item(name, Double.parseDouble(intel[0]),Integer.parseInt(intel[1]),Integer.parseInt(intel[2])))));
-        FileUtils.writeLineToOutputFile(name + " was added to inventory");
-        return inv;
+    /**
+     * this method adds an item to the inventory list
+     *
+     * @param command: the string of the command, all of the arguments of the add function are in this string
+     * @param inv:     the list of inventory items to add to
+     */
+    public void Add(String command, List<Item> inv){
+        try {
+            //takes in the String com, List<Item> inv
+            String name = command.substring(command.indexOf("'") + 1, command.lastIndexOf("'"));
+            String[] intel = (command.substring(command.lastIndexOf("'") + 1)).split("  ");
+            inv.add(new Item(name, Double.parseDouble(intel[0]), Integer.parseInt(intel[1]), Integer.parseInt(intel[2])));
+            FileUtils.writeInventoryToFile(inv);
+            FileUtils.writeLineToOutputFile(name + " was added to inventory");
+        }catch (NumberFormatException e){
+            System.out.println("Remember to format your command as follows: ADD(1 space)'NAME'(1 Space)PRICE(2 spaces)AISLE(2 spaces)");
+        }catch(StringIndexOutOfBoundsException e){
+            System.out.println("Remember to format your command as follows: ADD(1 space)'NAME'(1 Space)PRICE(2 spaces)AISLE(2 spaces)");
+        }
     }
 
+    /**
+     * this method takes in an item, finds it (if it exists) in the inventory, and outputs the cost to the output file
+     * @param command:  the string of the command, all of the arguments of the cost function are in this string
+     * @param inv: the list of inventory items to find the cost in
+     */
     public void Cost(String command, List<Item> inv){
         String name = command.substring(command.indexOf("'")+1, command.lastIndexOf("'"));
         double price1 = 0.0;
@@ -134,6 +194,11 @@ public class Store implements IStore{
         FileUtils.writeLineToOutputFile(name + ": $" + price1);
     }
 
+    /**
+     * this method takes in a string of an item and finds it in the inventory, it returns the quantity of the item
+     * @param command: the string of the command, all of the arguments of the find function are in this string
+     * @param inv: the list of inventory items to find the cost in
+     */
     public void Find(String command, List<Item> inv){
         boolean found = false;
         int itemN =0;
@@ -158,6 +223,12 @@ public class Store implements IStore{
         FileUtils.writeLineToOutputFile(result);
     }
 
+    /**
+     * this method takes in the string of the command and the list of employees on the staff and fires the specified employee
+     * in the command call
+     * @param command: the string of the command, all of the arguments of the fire function are in this string
+     * @param employees: the list of staff items to fire the employee from
+     */
     public void Fire(String command, List<Staff> employees){
         boolean found = false;
         int staffNum = 0;
@@ -177,6 +248,12 @@ public class Store implements IStore{
         }
     }
 
+    /**
+     * this method adds an employee to the staff
+     * @param command: the string of the command, all of the arguments of the hire function are in this string
+     * @param employees: the list of staff items to fire the employee from
+     * @param commandSplit: the split list of the command string
+     */
     public void Hire(String command, List<Staff> employees, String[] commandSplit){
         String name = command.substring(command.indexOf("'")+1, command.lastIndexOf("'")+1).replace("'","");
         String[] hold = name.split(" ");
@@ -186,6 +263,12 @@ public class Store implements IStore{
         FileUtils.writeLineToOutputFile(finalName + " has been hired as a " + employees.getLast().getRole());
     }
 
+    /**
+     * this method promotes an employee on the staff
+     * @param command: the string of the command, all of the arguments of the promote function are in this string
+     * @param employees: the list of staff items to fire the employee from
+     * @param commandSplit: the split list of the command string
+     */
     public void Promote(String command, List<Staff> employees, String[] commandSplit){
         String name = command.substring(command.indexOf("'")+1, command.lastIndexOf("'")+1).replace("'","");
         String[] hold1 = name.split(" ");
@@ -222,6 +305,12 @@ public class Store implements IStore{
         FileUtils.writeLineToOutputFile(result);
     }
 
+    /**
+     * this method sells an item in the inventory
+     * @param command: the string of the command, all of the arguments of the sell function are in this string
+     * @param inventory: the list of inventory items to find the cost in
+     * @param commandSplit: the split list of the command string
+     */
     public void Sell(String command, List<Item> inventory, String[] commandSplit){
         String name = command.substring(command.indexOf("'")+1, command.lastIndexOf("'"));
         int invNum = 0;
@@ -248,6 +337,11 @@ public class Store implements IStore{
         FileUtils.writeLineToOutputFile(result);
     }
 
+    /**
+     * this function returns the quantity of the item in the inventory
+     * @param command:  the string of the command, all of the arguments of the quantity function are in this string
+     * @param inventory:  the list of inventory items to find the cost in
+     */
     public void Quantity(String command, List<Item> inventory){
         String name = command.substring(command.indexOf("'")+1, command.lastIndexOf("'")).toLowerCase(Locale.ROOT);
         boolean found = false;
@@ -267,12 +361,24 @@ public class Store implements IStore{
         FileUtils.writeLineToOutputFile(result);
     }
 
-    public void getUserInput(){
-        System.out.println("Welcome to High's Hardware and Gardening \n Type EXIT to exit the program at any time \n or type your commands");
+    /**
+     * this item gets the user input from the terminal and runs the commands that the user inputs
+     * @param inventory: this is the list of items in the inventory of the store
+     * @param storeStaff: this is the list of employees on the staff
+     */
+    public void getUserInput(List<Item> inventory, List<Staff> storeStaff){
+        System.out.println("Welcome to High's Hardware and Gardening \nType EXIT to exit the program at any time \nOr type your commands");
         //press enter again to end program
         Scanner userLine = new Scanner(System.in);
-
-
+        while (true) {
+            String line = userLine.nextLine();
+            String[] lineSplit = line.split(" ");
+            if ("EXIT".equalsIgnoreCase(line)) {
+                break;
+            }else{
+                applyCommand(line, lineSplit, inventory, storeStaff);
+            }
+        }
     }
 
 }

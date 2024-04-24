@@ -1,6 +1,4 @@
 package edu.iu.c212.programs;
-
-import edu.iu.c212.models.Item;
 import edu.iu.c212.models.Staff;
 import edu.iu.c212.utils.FileUtils;
 
@@ -8,11 +6,21 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 
 public class StaffScheduler {
-    private static File shiftSchedulesFile = new File("C:\\Users\\maryg\\OneDrive\\Documents\\GitHub\\C212Project\\HardwareStarterCode\\ProjectStarterCode\\ProjectStarterCode\\src\\edu\\iu\\c212\\resources\\shift_schedules_IN.txt");
+    private static final Path basePath = Path.of("./HardwareStarterCode/ProjectStarterCode/ProjectStarterCode/src/edu/iu/c212/resources");
+    private static File shiftSchedulesFile = new File(basePath + "/shift_schedules_IN.txt");
 
+    /**
+     * this method schedules the store staff
+     * it reads in a schedule of the store hours
+     * then it calcuates the total amount of hours the store is open
+     * it counts the amount of staffers and divides the hours evenly amongst the workers
+     * finally it schedules the staffers to the available days and time slots
+     * it outputs this schedule to the file staff_schedule_OUT.txt
+     */
     public void scheduleStaff(){
         Map<String,Double> hours = new HashMap<>();
         List<Staff> storeStaff;
@@ -50,9 +58,12 @@ public class StaffScheduler {
 
        //the staff member, and a map of their day, and if they can work that day
         Map<String,Map<String,Boolean>> h = new HashMap<>();
+        //put an empty hash map in for each worker, it could be just an array list of strings (days of the week)
+        // i just like hashmaps more <3
         for (int i = 0; i < storeStaff.size(); i++) {
             h.put(storeStaff.get(i).getFullName(), new HashMap<String, Boolean>());
         }
+        //go through the staff and enter which days they can work into the hashmaps
         for (int i = 0; i < storeStaff.size(); i++) {
             String[] sched = storeStaff.get(i).getAvailability().split("\\.");
             for (int j = 0; j < sched.length; j++) {
@@ -95,6 +106,7 @@ public class StaffScheduler {
         for(String worker: h.keySet()){
             shiftCount.put(worker,0);
         }
+        //this is a nasty couple lines of code I apologize
         //splitting up total hours into 3-hour shifts and get shift amount for workers, these are the max amount of shifts each worker can work
         double shiftamt = Math.ceil((totalHours / Double.parseDouble(String.valueOf(storeStaff.size()))) / 3);
         //max 3 people working per day, these are the shifts that are available for workers per day
@@ -124,6 +136,7 @@ public class StaffScheduler {
             }
         }
 
+        //sort the map by last name
         for(String day : schedu.keySet()){
             sortLastName(schedu.get(day));
         }
@@ -164,9 +177,12 @@ public class StaffScheduler {
         //use file utils to write to the schedule file
         FileUtils.writeStoreScheduleToFile(finSched);
 
-
     }
 
+    /**
+     * this method sorts the last names of the passed in list, the list is full of strings "First Last"
+     * @param named: a list of names, first and last, to be sorted
+     */
     public static void sortLastName(List<String> named){
         for (int i = 0; i < named.size(); i++) {
             for (int j = 0; j < named.size(); j++) {

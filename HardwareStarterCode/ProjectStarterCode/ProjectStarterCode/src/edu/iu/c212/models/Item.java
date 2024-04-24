@@ -5,6 +5,15 @@ public class Item {
     private double price;
     private int quantity;
     private int aisleNum;
+
+    /**
+     * creates an instance of the item class
+     * -all param are named intuitively
+     * @param name
+     * @param price
+     * @param quantity
+     * @param aisleNum
+     */
     public Item(String name, double price, int quantity, int aisleNum){
         this.name = name;
         this.price = price;

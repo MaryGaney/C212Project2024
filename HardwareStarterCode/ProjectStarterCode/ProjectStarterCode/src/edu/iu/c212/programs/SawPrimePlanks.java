@@ -13,6 +13,14 @@ public class SawPrimePlanks {
         -call helper again with the length being (big ass length / i) or (big ass length - i), list
         -break the function
     */
+
+    /**
+     * this method takes in an integer, this integer represents a plank length (composite number)
+     * we find the smallest prime number factors, that when multiplied together, create this number
+     * We want the resulting planks (after recursively finding the small prime factors) to be as long as possible
+     * @param longPlankLength: the length of the original plank
+     * @return a list of prime planks
+     */
     public static List<Integer> getPlankLengths(int longPlankLength) {
         List<Integer> hold = helper(longPlankLength);
 
@@ -31,6 +39,11 @@ public class SawPrimePlanks {
 
     }
 
+    /**
+     * build a list of the smallest prime divisors of the number
+     * @param longPlankLength: the length of the plank, integer
+     * @return: the list of the smallest prime divisors
+     */
     public static List<Integer> helper(int longPlankLength){
         List<Integer> result = new ArrayList<>();
 
@@ -44,6 +57,11 @@ public class SawPrimePlanks {
         return result;
     }
 
+    /**
+     * return the smallest prime divisor of the input integer
+     * @param plankLength: integer to find the smallest prime divisor from
+     * @return the smallest prime divisor
+     */
     public static int sawPlank(int plankLength) {
         // Find the smallest divisor (composite factor) of the plank length
         for (int i = 2 ; i <= plankLength; i++) {
@@ -55,6 +73,11 @@ public class SawPrimePlanks {
         return -1;
     }
 
+    /**
+     * checks if the integer plugged in is prime or not
+     * @param num: integer plugged
+     * @return boolean value, true if the number is prime
+     */
     private static boolean isPrime(int num) {
         if (num < 2) {
             return false;
